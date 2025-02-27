@@ -1,0 +1,15 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bargaineer"
+version = "0.1.0"
+dependencies = [
+	"pyjwt",
+	"python-dotenv",
+	"pytz",
+	"requests",
+	"sqlalchemy",
+	"tqdm",
+]
