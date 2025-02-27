@@ -106,9 +106,9 @@ def request(
     with TOKEN.open("r") as f:
         tokens = json.load(f)
 
-    headers = {
-        "Accept": "application/json",
-        "Authorization": f"Bearer {tokens["access_token"]}",
-    }
+        headers = {
+            "Accept": "application/json",
+            "Authorization": f"Bearer {tokens["access_token"]}",
+        }
 
-    return requests.request(method, url, params=params, data=data, headers=headers)
+        return requests.request(method, url, params=params, data=data, headers=headers)
