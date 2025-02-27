@@ -1,0 +1,21 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: set up
+        uses: actions/setup-python@v2
+        with:
+          python: 3.13
+      - name: install dependencies
+        run: pip install -e .
+      - name: run tests
+        run: python -m unittest -v
