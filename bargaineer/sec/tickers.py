@@ -1,3 +1,5 @@
+import os
+
 import tqdm
 import requests
 
@@ -6,12 +8,15 @@ from sqlalchemy.orm import Session
 from bargaineer import EMAIL, ENGINE, NAME, models
 
 
-def tickers():
+SEC_COMPANY_TICKERS_URL = os.environ.get("SEC_COMPANY_TICKERS_URL", "")
+
+
+def download():
     with Session(ENGINE) as session:
         session.query(models.Ticker).delete()
 
         response = requests.get(
-            "https://www.sec.gov/files/company_tickers.json",
+            SEC_COMPANY_TICKERS_URL,
             headers={"User-Agent": f"{NAME} {EMAIL}"},
         )
 
