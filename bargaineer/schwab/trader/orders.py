@@ -29,7 +29,7 @@ class Status(Enum):
     UNKNOWN = "UNKNOWN"
 
 
-def accounts_orders(from_entered_time: datetime, to_entered_time: datetime):
+def orders(from_entered_time: datetime, to_entered_time: datetime):
     url = f"{TRADER_URL}/orders"
 
     params = {
@@ -40,7 +40,7 @@ def accounts_orders(from_entered_time: datetime, to_entered_time: datetime):
     return {"url": url, "params": params}
 
 
-def accounts_order(
+def accounts_orders(
     account_number: str,
     from_entered_time: datetime,
     to_entered_time: datetime,
@@ -57,7 +57,11 @@ def accounts_order(
     return {"url": url, "params": params}
 
 
-def place_order(
+def accounts_order(account_number: str, order_id: int) -> str:
+    return f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}"
+
+
+def post_order(
     account_number: str,
     order_type: str,
     session: str,
@@ -66,7 +70,6 @@ def place_order(
     order_leg_collection: List[Dict],
 ):
     url = f"{TRADER_URL}/accounts/{account_number}/orders"
-
     data = {
         "orderType": order_type,
         "session": session,
@@ -74,5 +77,28 @@ def place_order(
         "orderStrategyType": order_strategy_type,
         "orderLegCollection": order_leg_collection,
     }
+    return {"url": url, "data": data}
 
+
+def delete_order(account_number: str, order_id: int):
+    return f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}"
+
+
+def put_order(
+    account_number: str,
+    order_id: int,
+    order_type: str,
+    session: str,
+    duration: str,
+    order_strategy_type: str,
+    order_leg_collection: List[Dict],
+):
+    url = f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}"
+    data = {
+        "orderType": order_type,
+        "session": session,
+        "duration": duration,
+        "orderStrategyType": order_strategy_type,
+        "orderLegCollection": order_leg_collection,
+    }
     return {"url": url, "data": data}

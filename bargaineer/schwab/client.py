@@ -65,6 +65,8 @@ ENDPOINTS = {
     "/accounts": accounts.accounts,
     "/accounts/{accountNumber}": accounts.account,
     "/accounts/{accountNumber}/orders": orders.accounts_orders,
+    "/accounts/{accountNumber}/orders/{orderId}": orders.accounts_order,
+    "/orders": orders.orders,
     "/accounts/{accountNumber}/transactions": transactions.transactions,
     "/accounts/{accountNumber}/transactions/{transactionId}": transactions.transaction,
     "/userPreference": user_preference.user_preference,
@@ -104,9 +106,9 @@ def request(
     with TOKEN.open("r") as f:
         tokens = json.load(f)
 
-        headers = {
-            "Accept": "application/json",
-            "Authorization": f"Bearer {tokens["access_token"]}",
-        }
+    headers = {
+        "Accept": "application/json",
+        "Authorization": f"Bearer {tokens["access_token"]}",
+    }
 
-        return requests.request(method, url, params=params, data=data, headers=headers)
+    return requests.request(method, url, params=params, data=data, headers=headers)
