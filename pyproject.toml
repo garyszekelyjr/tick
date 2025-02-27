@@ -13,3 +13,6 @@ dependencies = [
 	"sqlalchemy",
 	"tqdm",
 ]
+
+[tool.setuptools]
+packages = ["bargaineer"]
