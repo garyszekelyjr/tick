@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from .models import Base
 
 
-SECRETS = Path("secrets/")
+SECRETS = Path(".secrets/")
 TZ = pytz.timezone("EST")
 
 load_dotenv(SECRETS / ".env")
