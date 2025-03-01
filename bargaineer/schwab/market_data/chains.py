@@ -1,6 +1,8 @@
 from enum import Enum
-from typing import Dict
 
+from requests import Response
+
+from .. import client
 from . import MARKET_DATA_URL
 
 
@@ -14,9 +16,9 @@ def chains(
     symbol: str,
     contract_type: ContractType = ContractType.ALL,
     strike_count: int | None = None,
-) -> Dict:
+) -> Response:
     url = f"{MARKET_DATA_URL}/chains"
     params = {"symbol": symbol, "contractType": contract_type.value}
     if strike_count:
         params["strikeCount"] = str(strike_count)
-    return {"url": url, "params": params}
+    return client.request(url, params=params)

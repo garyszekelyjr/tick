@@ -1,6 +1,9 @@
 from enum import Enum
-from typing import Dict, List
+from typing import List
 
+from requests import Response
+
+from .. import client
 from . import MARKET_DATA_URL
 
 
@@ -15,17 +18,17 @@ class Market(Enum):
 def markets(
     markets: List[Market] = [market for market in Market],
     date: str = "",
-) -> Dict:
+) -> Response:
     url = f"{MARKET_DATA_URL}/markets"
     params = {"markets": ",".join(map(lambda market: market.value, markets))}
     if date:
         params["date"] = date
-    return {"url": url, "params": params}
+    return client.request(url, params=params)
 
 
-def market(market: Market, date: str = "") -> Dict:
+def market(market: Market, date: str = "") -> Response:
     url = f"{MARKET_DATA_URL}/markets/{market.value}"
     params = {}
     if date:
         params["date"] = date
-    return {"url": url, "params": params}
+    return client.request(url, params=params)

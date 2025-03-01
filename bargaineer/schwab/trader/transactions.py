@@ -1,7 +1,9 @@
 from datetime import datetime
 from enum import Enum
-from typing import Dict
 
+from requests import Response
+
+from .. import client
 from . import TRADER_URL
 
 
@@ -23,13 +25,13 @@ class Types(Enum):
     SMA_ADJUSTMENT = "SMA_ADJUSTMENT"
 
 
-def transactions(
+def get_all(
     account_number: str,
     start_date: datetime,
     end_date: datetime,
     symbol: str = "",
     types: str = "",
-) -> Dict:
+) -> Response:
     url = f"{TRADER_URL}/accounts/{account_number}/transactions"
 
     params = {
@@ -39,8 +41,10 @@ def transactions(
         "types": types,
     }
 
-    return {"url": url, "params": params}
+    return client.request(url, params=params)
 
 
-def transaction(account_number: str, transaction_id: int) -> str:
-    return f"{TRADER_URL}/accounts/{account_number}/transactions/{transaction_id}"
+def get(account_number: str, transaction_id: int) -> Response:
+    return client.request(
+        f"{TRADER_URL}/accounts/{account_number}/transactions/{transaction_id}"
+    )

@@ -7,15 +7,6 @@ from urllib.parse import parse_qs, urlencode, urlparse
 
 import requests
 
-from bargaineer.schwab.market_data import (
-    chains,
-    expiration_chain,
-    instruments,
-    market_hours,
-    movers,
-    price_history,
-)
-
 from .. import SECRETS
 
 from . import (
@@ -28,8 +19,6 @@ from . import (
 )
 
 from . import utilities
-from .trader import accounts, orders, transactions, user_preference
-from .market_data import quotes
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -59,28 +48,6 @@ SERVER = HTTPServer(("127.0.0.1", 443), Handler)
 CONTEXT = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
 CONTEXT.load_cert_chain(SECRETS / "cert.pem", SECRETS / "key.pem", PEM_PASSWORD)
 SERVER.socket = CONTEXT.wrap_socket(SERVER.socket, server_side=True)
-
-ENDPOINTS = {
-    "/accounts/accountNumbers": accounts.account_numbers,
-    "/accounts": accounts.accounts,
-    "/accounts/{accountNumber}": accounts.account,
-    "/accounts/{accountNumber}/orders": orders.accounts_orders,
-    "/accounts/{accountNumber}/orders/{orderId}": orders.accounts_order,
-    "/orders": orders.orders,
-    "/accounts/{accountNumber}/transactions": transactions.transactions,
-    "/accounts/{accountNumber}/transactions/{transactionId}": transactions.transaction,
-    "/userPreference": user_preference.user_preference,
-    "/quotes": quotes.quotes,
-    "/{symbol_id}/quotes": quotes.quote,
-    "/chains": chains.chains,
-    "/expirationchain": expiration_chain.expiration_chain,
-    "/pricehistory": price_history.price_history,
-    "/markets": market_hours.markets,
-    "/markets/{market_id}": market_hours.market,
-    "/movers/{symbol_id}": movers.movers,
-    "/instruments": instruments.instruments,
-    "/instruments/{cusip_id}": instruments.instrument,
-}
 
 
 def request(

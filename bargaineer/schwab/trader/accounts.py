@@ -1,13 +1,16 @@
+from requests import Response
+
+from .. import client
 from . import TRADER_URL
 
 
-def account_numbers() -> str:
-    return f"{TRADER_URL}/accounts/accountNumbers"
+def account_numbers() -> Response:
+    return client.request(f"{TRADER_URL}/accounts/accountNumbers")
 
 
-def accounts() -> str:
-    return f"{TRADER_URL}/accounts"
+def get_all() -> Response:
+    return client.request(f"{TRADER_URL}/accounts")
 
 
-def account(account_number: str) -> str:
-    return f"{TRADER_URL}/accounts/{account_number}"
+def get(account_number: str) -> Response:
+    return client.request(f"{TRADER_URL}/accounts/{account_number}")

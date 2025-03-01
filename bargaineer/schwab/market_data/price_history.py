@@ -1,6 +1,9 @@
 from datetime import datetime
 from enum import Enum
 
+from requests import Response
+
+from .. import client
 from bargaineer.schwab.market_data import MARKET_DATA_URL
 
 
@@ -82,7 +85,7 @@ def price_history(
     | WeeklyFrequency
     | MonthlyFrequency
     | None = None,
-):
+) -> Response:
     url = f"{MARKET_DATA_URL}/pricehistory"
     params = {
         "symbol": symbol,
@@ -99,4 +102,4 @@ def price_history(
         params["frequencyType"] = frequency_type.value
     if frequency:
         params["frequency"] = frequency.value
-    return {"url": url, "params": params}
+    return client.request(url, params=params)

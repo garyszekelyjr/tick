@@ -1,5 +1,8 @@
+from requests import Response
+
+from .. import client
 from . import TRADER_URL
 
 
-def user_preference() -> str:
-    return f"{TRADER_URL}/userPreference"
+def get() -> Response:
+    return client.request(f"{TRADER_URL}/userPreference")

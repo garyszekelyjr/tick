@@ -4,11 +4,12 @@ from datetime import datetime
 
 from bargaineer import TZ
 from bargaineer.schwab import client
+from bargaineer.schwab.trader import accounts, orders
 
 
 class TestOrders(unittest.TestCase):
     def setUp(self) -> None:
-        response = client.request(client.ENDPOINTS["/accounts/accountNumbers"]())
+        response = accounts.account_numbers()
         self.assertEqual(response.status_code, 200)
         self.account_numbers = response.json()
 
@@ -16,9 +17,7 @@ class TestOrders(unittest.TestCase):
         """Test /orders"""
         from_entered_time = datetime(2025, 1, 1, 0, 0, 0, 0, TZ)
         to_entered_time = datetime(2025, 12, 31, 23, 59, 59, 999999, TZ)
-        response = client.request(
-            **client.ENDPOINTS["/orders"](from_entered_time, to_entered_time)
-        )
+        response = orders.orders(from_entered_time, to_entered_time)
         self.assertEqual(response.status_code, 200)
 
     def test_accounts_orders(self):
@@ -26,10 +25,8 @@ class TestOrders(unittest.TestCase):
         from_entered_time = datetime(2025, 1, 1, 0, 0, 0, 0, TZ)
         to_entered_time = datetime(2025, 12, 31, 23, 59, 59, 999999, TZ)
         for account_number in self.account_numbers:
-            response = client.request(
-                **client.ENDPOINTS["/accounts/{accountNumber}/orders"](
-                    account_number["hashValue"], from_entered_time, to_entered_time
-                )
+            response = orders.accounts_orders(
+                account_number["hashValue"], from_entered_time, to_entered_time
             )
             self.assertEqual(response.status_code, 200)
 
@@ -38,18 +35,13 @@ class TestOrders(unittest.TestCase):
         from_entered_time = datetime(2025, 1, 1, 0, 0, 0, 0, TZ)
         to_entered_time = datetime(2025, 12, 31, 23, 59, 59, 999999, TZ)
         for account_number in self.account_numbers:
-            response = client.request(
-                **client.ENDPOINTS["/accounts/{accountNumber}/orders"](
-                    account_number["hashValue"], from_entered_time, to_entered_time
-                )
+            response = orders.accounts_orders(
+                account_number["hashValue"], from_entered_time, to_entered_time
             )
             self.assertEqual(response.status_code, 200)
-            orders = response.json()
-            order = orders[0]
+            order = response.json()[0]
             if order:
-                response = client.request(
-                    client.ENDPOINTS["/accounts/{accountNumber}/orders/{orderId}"](
-                        account_number["hashValue"], order["orderId"]
-                    )
+                response = orders.accounts_order(
+                    account_number["hashValue"], order["orderId"]
                 )
                 self.assertEqual(response.status_code, 200)

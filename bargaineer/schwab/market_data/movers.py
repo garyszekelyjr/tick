@@ -1,6 +1,8 @@
 from enum import Enum
-from typing import Dict
 
+from requests import Response
+
+from .. import client
 from . import MARKET_DATA_URL
 
 
@@ -36,11 +38,11 @@ class Frequency(Enum):
 
 def movers(
     symbol: Symbol, sort: Sort | None = None, frequency: Frequency | None = None
-) -> Dict:
+) -> Response:
     url = f"{MARKET_DATA_URL}/movers/{symbol.value}"
     params = {}
     if sort:
         params["sort"] = sort.value
     if frequency:
         params["frequency"] = frequency.value
-    return {"url": url, "params": params}
+    return client.request(url, params=params)

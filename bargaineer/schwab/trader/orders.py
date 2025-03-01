@@ -2,6 +2,9 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, List
 
+from requests import Response
+
+from .. import client
 from . import TRADER_URL
 
 
@@ -29,7 +32,7 @@ class Status(Enum):
     UNKNOWN = "UNKNOWN"
 
 
-def orders(from_entered_time: datetime, to_entered_time: datetime):
+def orders(from_entered_time: datetime, to_entered_time: datetime) -> Response:
     url = f"{TRADER_URL}/orders"
 
     params = {
@@ -37,7 +40,7 @@ def orders(from_entered_time: datetime, to_entered_time: datetime):
         "toEnteredTime": to_entered_time.isoformat(),
     }
 
-    return {"url": url, "params": params}
+    return client.request(url, params=params)
 
 
 def accounts_orders(
@@ -45,20 +48,18 @@ def accounts_orders(
     from_entered_time: datetime,
     to_entered_time: datetime,
     status: str = "",
-):
+) -> Response:
     url = f"{TRADER_URL}/accounts/{account_number}/orders"
-
     params = {
         "fromEnteredTime": from_entered_time.isoformat(),
         "toEnteredTime": to_entered_time.isoformat(),
         "status": status,
     }
+    return client.request(url, params=params)
 
-    return {"url": url, "params": params}
 
-
-def accounts_order(account_number: str, order_id: int) -> str:
-    return f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}"
+def accounts_order(account_number: str, order_id: int) -> Response:
+    return client.request(f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}")
 
 
 def post_order(
@@ -68,7 +69,7 @@ def post_order(
     duration: str,
     order_strategy_type: str,
     order_leg_collection: List[Dict],
-):
+) -> Response:
     url = f"{TRADER_URL}/accounts/{account_number}/orders"
     data = {
         "orderType": order_type,
@@ -77,11 +78,13 @@ def post_order(
         "orderStrategyType": order_strategy_type,
         "orderLegCollection": order_leg_collection,
     }
-    return {"url": url, "data": data}
+    return client.request(url, "POST", data=data)
 
 
 def delete_order(account_number: str, order_id: int):
-    return f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}"
+    return client.request(
+        f"{TRADER_URL}/accounts/{account_number}/orders/{order_id}", "DELETE"
+    )
 
 
 def put_order(
@@ -101,4 +104,4 @@ def put_order(
         "orderStrategyType": order_strategy_type,
         "orderLegCollection": order_leg_collection,
     }
-    return {"url": url, "data": data}
+    return client.request(url, "PUT", data=data)

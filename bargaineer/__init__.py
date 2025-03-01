@@ -18,6 +18,6 @@ load_dotenv(SECRETS / ".env")
 EMAIL = os.environ.get("EMAIL", "")
 NAME = os.environ.get("NAME", "")
 
-ENGINE = create_engine(f"sqlite:///{SECRETS}/db.sqlite")
+ENGINE = create_engine(f"sqlite:///{SECRETS / 'db.sqlite'}")
 
 Base.metadata.create_all(ENGINE)
