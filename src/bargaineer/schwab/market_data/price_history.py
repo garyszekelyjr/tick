@@ -71,7 +71,7 @@ class MonthlyFrequency(Enum):
     ONE = 1
 
 
-def price_history(
+def get(
     symbol: str,
     start_date: datetime,
     end_date: datetime,

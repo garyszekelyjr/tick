@@ -8,7 +8,6 @@ from urllib.parse import parse_qs, urlencode, urlparse
 import requests
 
 from .. import SECRETS
-
 from . import (
     CLIENT_ID,
     CLIENT_SECRET,

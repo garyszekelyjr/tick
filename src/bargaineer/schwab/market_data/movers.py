@@ -36,7 +36,7 @@ class Frequency(Enum):
     SIXTY = 60
 
 
-def movers(
+def get(
     symbol: Symbol, sort: Sort | None = None, frequency: Frequency | None = None
 ) -> Response:
     url = f"{MARKET_DATA_URL}/movers/{symbol.value}"

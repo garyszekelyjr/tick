@@ -12,7 +12,7 @@ class ContractType(Enum):
     ALL = "ALL"
 
 
-def chains(
+def get(
     symbol: str,
     contract_type: ContractType = ContractType.ALL,
     strike_count: int | None = None,
