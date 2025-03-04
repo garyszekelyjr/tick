@@ -1,4 +1,5 @@
 import os
+import ssl
 
 from pathlib import Path
 
@@ -14,3 +15,6 @@ REDIRECT_URI = os.environ.get("SCHWAB_REDIRECT_URI", "")
 PEM_PASSWORD = os.environ.get("PEM_PASSWORD", "")
 
 TOKEN = Path(SECRETS / "token.json")
+
+CONTEXT = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+CONTEXT.load_cert_chain(SECRETS / "cert.pem", SECRETS / "key.pem", PEM_PASSWORD)

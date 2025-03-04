@@ -4,7 +4,7 @@ from enum import Enum
 from requests import Response
 
 from .. import client
-from bargaineer.schwab.market_data import MARKET_DATA_URL
+from . import MARKET_DATA_URL
 
 
 class PeriodType(Enum):

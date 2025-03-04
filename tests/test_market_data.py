@@ -1,9 +1,8 @@
 import unittest
 
 from datetime import datetime
-from pprint import pprint
 
-from bargaineer.schwab.market_data import (
+from tick.schwab.market_data import (
     chains,
     expiration_chains,
     market_hours,

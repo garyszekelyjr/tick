@@ -1,4 +1,4 @@
-# bargaineer 
+# tick 
 
 python wrapper for schwab's apis
 

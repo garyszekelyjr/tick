@@ -2,8 +2,8 @@ import unittest
 
 from datetime import datetime
 
-from bargaineer import TZ
-from bargaineer.schwab.trader import accounts, orders, transactions, user_preference
+from tick import TZ
+from tick.schwab.trader import accounts, orders, transactions, user_preference
 
 
 class TestTrader(unittest.TestCase):

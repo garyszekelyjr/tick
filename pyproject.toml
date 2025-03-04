@@ -3,8 +3,8 @@ requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "bargaineer"
-version = "0.1.0"
+name = "tick"
+version = "0.0.0"
 dependencies = [
 	"pyjwt",
 	"python-dotenv",
