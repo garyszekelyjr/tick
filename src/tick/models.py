@@ -22,3 +22,5 @@ class Token(Base):
     token_type: Mapped[str] = mapped_column()
     scope: Mapped[str] = mapped_column()
     expires_in: Mapped[int] = mapped_column()
+    access_token_expires: Mapped[float] = mapped_column()
+    refresh_token_expires: Mapped[float] = mapped_column()

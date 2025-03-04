@@ -1,13 +1,13 @@
-import json
-
+from datetime import datetime
 from typing import Dict
 
 import requests
 
-from . import (
-    TOKEN,
-    utilities,
-)
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from .. import ENGINE, models
+from . import utilities
 
 
 def request(
@@ -16,26 +16,30 @@ def request(
     params: Dict[str, str] | None = None,
     data: Dict[str, str] | None = None,
 ):
-    if not TOKEN.exists():
-        print("Tokens Not Found. Authenticating...")
-        utilities.authorize()
+    with Session(ENGINE) as session:
+        token = session.scalar(select(models.Token))
 
-    expired = utilities.is_expired()
+        if not token:
+            print("Tokens Not Found. Authenticating...")
+            token = utilities.authorize()
 
-    if expired["refresh"]:
-        print("Refresh Token Expired. Reauthenticating...")
-        utilities.authorize()
+        assert token
 
-    if expired["access"]:
-        print("Access Token Expired. Refreshing...")
-        utilities.refresh()
+        if datetime.now().timestamp() >= token.refresh_token_expires:
+            print("Refresh Token Expired. Reauthenticating...")
+            token = utilities.authorize()
 
-    with TOKEN.open("r") as f:
-        tokens = json.load(f)
+        assert token
+
+        if datetime.now().timestamp() >= token.access_token_expires:
+            print("Access Token Expired. Refreshing...")
+            token = utilities.refresh()
+
+        assert token
 
         headers = {
             "Accept": "application/json",
-            "Authorization": f"Bearer {tokens["access_token"]}",
+            "Authorization": f"Bearer {token.access_token}",
         }
 
         return requests.request(method, url, params=params, data=data, headers=headers)

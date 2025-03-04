@@ -1,5 +1,4 @@
 import base64
-import json
 import time
 import webbrowser
 
@@ -9,8 +8,12 @@ from threading import Thread
 from typing import Dict
 from urllib.parse import parse_qs, urlencode, urlparse
 
-import jwt
 import requests
+
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from .. import ENGINE, models
 
 from . import (
     CLIENT_ID,
@@ -19,7 +22,6 @@ from . import (
     OAUTH_AUTHORIZE_URL,
     OAUTH_TOKEN_URL,
     REDIRECT_URI,
-    TOKEN,
 )
 
 
@@ -34,8 +36,14 @@ def __token__(data: Dict[str, str]):
     )
 
     if response.status_code == 200:
-        with TOKEN.open("w") as f:
-            json.dump(response.json(), f)
+        with Session(ENGINE) as session:
+            token = models.Token(
+                **response.json(),
+                access_token_expires=datetime.now().timestamp() + 1800,
+                refresh_token_expires=datetime.now().timestamp() + 604800,
+            )
+            session.add(token)
+            session.commit()
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -72,33 +80,22 @@ def authorize():
     t.start()
 
     webbrowser.open(REDIRECT_URI)
-    while not TOKEN.exists():
-        time.sleep(1)
+    with Session(ENGINE) as session:
+        while not session.scalar(select(models.Token)):
+            time.sleep(1)
 
-    server.shutdown()
-    t.join()
+        server.shutdown()
+        t.join()
+        return session.scalar(select(models.Token))
 
 
 def refresh():
-    with TOKEN.open("r") as f:
-        tokens = json.load(f)
+    with Session(ENGINE) as session:
+        token = session.scalar(select(models.Token))
+        assert token
         data = {
             "grant_type": "refresh_token",
-            "refresh_token": tokens["refresh_token"],
+            "refresh_token": token.refresh_token,
         }
         __token__(data)
-
-
-def is_expired() -> Dict[str, bool]:
-    EXPIRATION_TIMES = {"access": 1800, "refresh": 604800}
-    with TOKEN.open("r") as f:
-        tokens = json.load(f)
-        payload = jwt.decode(
-            tokens["id_token"],
-            algorithms=["HS256"],
-            options={"verify_signature": False},
-        )
-        return {
-            key: datetime.now().timestamp() >= (payload["iat"] + value)
-            for key, value in EXPIRATION_TIMES.items()
-        }
+        return session.scalar(select(models.Token))
