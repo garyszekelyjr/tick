@@ -1,1 +1,1 @@
-sudo .venv/bin/python -m unittest -v
+sudo .venv/bin/pytest -v

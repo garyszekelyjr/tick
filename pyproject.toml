@@ -7,6 +7,7 @@ name = "tick"
 version = "0.0.0"
 dependencies = [
 	"pyjwt",
+	"pytest",
 	"python-dotenv",
 	"pytz",
 	"requests",

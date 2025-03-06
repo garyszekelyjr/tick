@@ -97,5 +97,7 @@ def refresh():
             "grant_type": "refresh_token",
             "refresh_token": token.refresh_token,
         }
+        session.delete(token)
+        session.commit()
         __token__(data)
         return session.scalar(select(models.Token))
