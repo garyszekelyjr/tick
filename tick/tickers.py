@@ -5,7 +5,7 @@ import requests
 
 from sqlalchemy.orm import Session
 
-from .. import EMAIL, ENGINE, NAME, models
+from . import EMAIL, ENGINE, NAME, models
 
 
 SEC_COMPANY_TICKERS_URL = os.environ.get("SEC_COMPANY_TICKERS_URL", "")

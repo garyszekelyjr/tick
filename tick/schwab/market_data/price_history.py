@@ -73,10 +73,6 @@ class MonthlyFrequency(Enum):
 
 def get(
     symbol: str,
-    start_date: datetime,
-    end_date: datetime,
-    need_extended_hours_data: bool = False,
-    need_previous_close: bool = False,
     period_type: PeriodType | None = None,
     period: DayPeriod | MonthPeriod | YearPeriod | YTDPeriod | None = None,
     frequency_type: FrequencyType | None = None,
@@ -85,12 +81,14 @@ def get(
     | WeeklyFrequency
     | MonthlyFrequency
     | None = None,
+    start_date: datetime | None = None,
+    end_date: datetime | None = None,
+    need_extended_hours_data: bool = False,
+    need_previous_close: bool = False,
 ) -> Response:
     url = f"{MARKET_DATA_URL}/pricehistory"
     params = {
         "symbol": symbol,
-        "startDate": int(start_date.timestamp() * 1000),
-        "endDate": int(end_date.timestamp() * 1000),
         "needExtendedHoursData": str(need_extended_hours_data).lower(),
         "needPreviousClose": str(need_previous_close).lower(),
     }
@@ -102,4 +100,8 @@ def get(
         params["frequencyType"] = frequency_type.value
     if frequency:
         params["frequency"] = frequency.value
+    if start_date:
+        params["start_date"] = int(start_date.timestamp() * 1000)
+    if end_date:
+        params["end_date"] = int(end_date.timestamp() * 1000)
     return client.request(url, params=params)

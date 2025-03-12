@@ -1,14 +1,10 @@
 from datetime import datetime
 
 from tick import TZ
-from tick.schwab.trader import accounts, transactions
-
-response = accounts.account_numbers()
-assert response.status_code == 200
-account_numbers = response.json()
+from tick.schwab.trader import transactions
 
 
-def test_transactions():
+def test_transactions(account_numbers):
     start_date = datetime(2025, 1, 1, 0, 0, 0, 0, TZ)
     end_date = datetime(2025, 12, 31, 23, 59, 59, 999999, TZ)
     for account_number in account_numbers:
@@ -18,7 +14,7 @@ def test_transactions():
         assert response.status_code == 200
 
 
-def test_transaction():
+def test_transaction(account_numbers):
     start_date = datetime(2025, 1, 1, 0, 0, 0, 0, TZ)
     end_date = datetime(2025, 12, 31, 23, 59, 59, 999999, TZ)
     for account_number in account_numbers:
